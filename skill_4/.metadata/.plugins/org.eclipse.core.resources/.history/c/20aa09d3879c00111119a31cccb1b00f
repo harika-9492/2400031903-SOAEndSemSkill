@@ -1,0 +1,36 @@
+package com.klu.springmvc.service;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.crypto.SecretKey;
+
+import org.springframework.stereotype.Service;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+
+@Service
+public class JWTService {
+
+    public String generateJWT(Map<String, String> u1, String role, Integer id) {
+
+        String key = "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiMSIsInVuIjoiaGFyaWthIiwiaWQiOiIxIiwiaWF0IjoxNzg3MjA1MjQ4LCJleHAiOjE3ODcyOTE2NDh9.0CNaS2MvxfmzvYRJHaBTW1Lp_yNH3xx9czjTpXYV-oBqQnBm4rypDj6qeGZKj6i43-oW39Zn1y8VrI6MIMrdyQ";
+
+        SecretKey skey = Keys.hmacShaKeyFor(key.getBytes());
+
+        Map<String, Object> claim = new HashMap<>();
+
+        claim.put("un", u1.get("username"));
+        claim.put("role", role);
+        claim.put("id", id.toString());
+
+        return Jwts.builder()
+                .claims(claim)
+                .issuedAt(new Date())
+                .expiration(new Date(new Date().getTime() + 86400000))
+                .signWith(skey)
+                .compact();
+    }
+}
